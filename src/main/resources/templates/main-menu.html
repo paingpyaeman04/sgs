@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>Main Menu</h2>
+	<p>Hello [[${name}]]</p>
+	<div sec:authorize="hasRole('ADMIN')">Text visible to ADMIN</div>
+	<div sec:authorize="hasRole('USER')">Text visible to USER</div>
+	<div sec:authorize="isAuthenticated()">Text visible only to
+		authenticated users.</div>
+
+	<a th:href="@{/logout}">Logout</a>
+</body>
+</html>
