@@ -44,8 +44,11 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeHttpRequests(authz -> authz.anyRequest().authenticated()).formLogin(
-                form -> form.loginPage("/signin").loginProcessingUrl("/login").defaultSuccessUrl("/").permitAll())
+        http.csrf().disable()
+                .authorizeHttpRequests(authz -> authz.antMatchers("/register").permitAll().anyRequest().authenticated())
+                .formLogin(
+                        form -> form.loginPage("/signin").loginProcessingUrl("/login").defaultSuccessUrl("/")
+                                .permitAll())
                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll());
 
         return http.build();
