@@ -1,7 +1,7 @@
 package com.ppm.sgs.models;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.Length;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private String id;
 
 	@Length(max = 70, message = "{user.valid.name.length}")
 	@NotBlank(message = "{user.valid.name.notblank}")
@@ -50,17 +50,13 @@ public class User {
 	private Boolean enabled = false;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(
-		name = "users_roles", 
-		joinColumns = @JoinColumn(name = "user_id"),
-		inverseJoinColumns = @JoinColumn(name = "role_id")
-	)
-	private Set<Role> roles = new HashSet<>();
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private List<Role> roles = new ArrayList<>();
 
 	public User() {
 	}
 
-	public User(Integer id,
+	public User(String id,
 			@Length(max = 70, message = "{user.valid.name.length}") @NotBlank(message = "{user.valid.name.notblank}") String name,
 			@Length(max = 45, message = "{user.valid.username.length}") @NotBlank(message = "{user.valid.username.notblank}") String username,
 			@Length(max = 255, message = "{user.valid.email.length}") @NotBlank(message = "{user.valid.email.notblank}") @Email(message = "{user.valid.email.format}") String email,
@@ -73,14 +69,12 @@ public class User {
 		this.password = password;
 		this.enabled = enabled;
 	}
-	
-	
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -124,11 +118,11 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 
