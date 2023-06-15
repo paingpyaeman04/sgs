@@ -55,7 +55,7 @@
                                 <a th:href="@{/users/add}" class="link-light rounded text-decoration-none p-1">Add User</a>
                             </li>
                             <li class="mb-2">
-                                <a href="@{/users/all}" class="link-light rounded text-decoration-none p-1">View Users</a>
+                                <a th:href="@{/users/all}" class="link-light rounded text-decoration-none p-1">View Users</a>
                             </li>
                         </ul>
                     </div>
@@ -66,7 +66,7 @@
         <!-- Header fragment -->
         <div th:fragment="header" class="row align-items-center p-3 bg-light sticky-top header overflow-auto">
             <div class="col d-flex justify-content-center">
-                <a class="navbar-brand link-success fs-2" href="#">Student Registration</a>
+                <a class="navbar-brand link-success fs-2" href="/">Student Registration</a>
             </div>
             <div class="col d-flex flex-column align-items-center">
                 <div class="row flex-column fs-6">
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="col d-flex justify-content-center">
-                <button class="btn btn-secondary fs-5">Logout</button>
+                <a th:href="@{/logout}" class="btn btn-secondary fs-5">Logout</a>
             </div>
         </div>
     </body>
