@@ -1,5 +1,7 @@
 package com.ppm.sgs.dtos;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -20,6 +22,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class UserDto {
+
+	private String id;
 
     @Length(max = 70, message = "{user.valid.name.length}")
 	@NotBlank(message = "{user.valid.name.notblank}")
@@ -45,6 +49,8 @@ public class UserDto {
 	@NotBlank(message = "{user.valid.password.notblank}")
     private String confirmPassword;
 
-    private Integer roleId;
+	private Boolean enabled;
+
+    private List<Integer> roleIds;
     
 }
