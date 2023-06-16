@@ -1,5 +1,6 @@
 package com.ppm.sgs.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -49,8 +50,8 @@ public class UserDto {
 	@NotBlank(message = "{user.valid.password.notblank}")
     private String confirmPassword;
 
-	private Boolean enabled;
+	private Boolean enabled = false;
 
-    private List<Integer> roleIds;
+    private List<Integer> roleIds = new ArrayList<>();
     
 }
