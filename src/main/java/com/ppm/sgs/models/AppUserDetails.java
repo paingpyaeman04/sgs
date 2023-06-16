@@ -25,6 +25,14 @@ public class AppUserDetails implements UserDetails {
         return user.getPassword();
     }
 
+    public String getId() {
+        return user.getId();
+    }
+
+    public String getFullName() {
+        return user.getName();
+    }
+
     @Override
     public String getUsername() {
         return user.getUsername();
