@@ -115,18 +115,18 @@ public class UserController {
 	
 	@GetMapping("/add")
 	public String addUserForm(ModelMap map) {
-		map.addAttribute("muser", new UserDto());
+		map.addAttribute("newUser", new UserDto());
 		return "add-user";
 	}
 	
 	@PostMapping("/add")
-	public String add(ModelMap map, @Valid @ModelAttribute("muser") UserDto updateDto, BindingResult result) {
+	public String add(ModelMap map, @Valid @ModelAttribute("newUser") UserDto newUserDto, BindingResult result) {
 		if(result.hasErrors()) {
 			return "add-user";
 		}
 		
-		User user = new User(null, updateDto.getName(), updateDto.getUsername(), updateDto.getEmail(), updateDto.getPassword(), updateDto.getEnabled());
-		List<Role> roles = roleService.getRolesByIds(updateDto.getRoleIds());
+		User user = new User(null, newUserDto.getName(), newUserDto.getUsername(), newUserDto.getEmail(), newUserDto.getPassword(), newUserDto.getEnabled());
+		List<Role> roles = roleService.getRolesByIds(newUserDto.getRoleIds());
 		user.setRoles(roles);
 		
 		String msg = userService.save(user);
