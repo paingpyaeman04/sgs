@@ -25,3 +25,12 @@
 	background-color: white;
 	color: green !important;
 }
+
+.toggle-password {
+	width: 48px;
+	cursor: pointer;
+}
+
+.error {
+	color: red;
+}
