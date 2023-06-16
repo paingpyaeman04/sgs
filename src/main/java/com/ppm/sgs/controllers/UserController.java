@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.ppm.sgs.dtos.UserDto;
+import com.ppm.sgs.models.AppUserDetails;
 import com.ppm.sgs.models.Role;
 import com.ppm.sgs.models.User;
 import com.ppm.sgs.services.RoleService;
@@ -103,10 +105,10 @@ public class UserController {
 		return "redirect:all";
 	}
 	
-	@PostMapping("/delete")
-	public String delete(HttpSession session, @RequestParam("userid") String id) {
-		User currentUser = (User) session.getAttribute("user");
-		if(currentUser.getId().equals(id)) {
+	@GetMapping("/delete")
+	public String delete(Authentication authentication, @RequestParam("id") String id) {
+		AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+		if(userDetails.getId().equals(id)) {
 			return "redirect:all";
 		}
 		userService.deleteById(id);
