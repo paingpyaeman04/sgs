@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ppm.sgs.exceptions.EmailAlreadyExistsException;
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public List<User> getAllUsers() {
@@ -59,8 +63,7 @@ public class UserServiceImpl implements UserService {
             lastId = "USR" + String.format("%03d", prevId + 1);
         }
         user.setId(lastId);
-
-        
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         try {
             if(userRepository.existsByUsername(user.getUsername())) {
