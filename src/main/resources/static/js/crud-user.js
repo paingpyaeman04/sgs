@@ -154,6 +154,6 @@ function submitUserForm() {
   }
 
   if (isValid) {
-    document.getElementById("add-user-form").submit();
+    document.getElementById("user-form").submit();
   }
 }

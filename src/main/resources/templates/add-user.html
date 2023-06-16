@@ -22,7 +22,7 @@
                         <div class="row mb-4 mt-4">
                             <h3 class="col col-3 offset-2 fw-semibold">Add User</h3>
                         </div>
-                        <form id="add-user-form" th:action="@{/users/add}" method="post" th:object="${newUser}">
+                        <form id="user-form" th:action="@{/users/add}" method="post" th:object="${newUser}">
                             <div class="row mb-3" id="name-input-row">
                                 <label class="offset-2 col-2 col-form-label" for="name">Name</label>
                                 <div class="col-4">
