@@ -7,8 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,7 +22,7 @@ import org.hibernate.validator.constraints.Length;
 @Table(name = "users")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Length(max = 6, message = "{user.valid.id.length}")
 	private String id;
 
 	@Length(max = 70, message = "{user.valid.name.length}")
