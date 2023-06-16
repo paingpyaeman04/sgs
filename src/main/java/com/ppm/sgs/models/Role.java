@@ -16,7 +16,7 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Length(max = 5, message = "{role.valid.name.length}")
+	@Length(max = 18, message = "{role.valid.name.length}")
 	@NotBlank(message = "{role.valid.name.notblank}")
 	private String name;
 
@@ -25,7 +25,7 @@ public class Role {
 	}
 
 	public Role(Integer id,
-			@Length(max = 5, message = "{role.valid.name.length}") @NotBlank(message = "{role.valid.name.notblank}") String name) {
+			@Length(max = 18, message = "{role.valid.name.length}") @NotBlank(message = "{role.valid.name.notblank}") String name) {
 		super();
 		this.id = id;
 		this.name = name;
