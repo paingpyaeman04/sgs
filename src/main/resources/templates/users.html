@@ -19,30 +19,30 @@
                     <div
                         class="container-fluid content-area">
                         <!-- Main Content -->
-                        <form class="row p-3" action="#">
+                        <form class="row p-3" action="/users/search" method="get">
                             <div class="col col-12 col-md-3">
-                                <input class="form-control" type="text" placeholder="User ID">
+                                <input class="form-control" type="text" placeholder="User ID" name="id">
                             </div>
                             <div class="col col-12 col-md-3">
-                                <input class="form-control" type="text" placeholder="Name">
+                                <input class="form-control" type="text" placeholder="Name" name="name">
                             </div>
                             <div class="col col-6 col-md-1">
-                                <button class="btn btn-primary">Search</button>
+                                <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                             <div class="col col-6 col-md-1">
                                 <button class="btn btn-secondary" type="reset">Reset</button>
                             </div>
                             <!-- <div class="col d-flex align-items-center form-switch">
-                                                            <input class="form-check-input" type="checkbox" role="switch" id="pending">
-                                                            <label class="form-check-label ms-1" for="pending">Pending</label>
-                                                        </div> -->
+                                                                                        <input class="form-check-input" type="checkbox" role="switch" id="pending">
+                                                                                        <label class="form-check-label ms-1" for="pending">Pending</label>
+                                                                                    </div> -->
                             <div
                                 class="col col-12 col-md-2 d-flex align-items-center">
                                 <!-- <select class="form-select" name="" id="select-user-type">
-                                                                    <option value="all">All</option>
-                                                                    <option value="pending">Pending</option>
-                                                                    <option value="verified">Verified</option>
-                                                                </select> -->
+                                                                                                    <option value="all">All</option>
+                                                                                                    <option value="pending">Pending</option>
+                                                                                                    <option value="verified">Verified</option>
+                                                                                                </select> -->
                                 <select class="form-select" name="userType" id="select-user-type">
                                     <option th:each="type : ${userTypes.entrySet()}" th:value="${type.key}" th:text="${type.value}" th:selected="${type.key == userType}"></option>
                                 </select>
@@ -63,7 +63,7 @@
                                     <td th:text="${user.id}"></td>
                                     <td th:text="${user.name}"></td>
                                     <td>
-                                        <button class="btn btn-success">Update</button>
+                                        <button th:id="${user.id}" class="btn btn-success update-btn">Update</button>
                                     </td>
                                     <td>
                                         <button th:id="${user.id}" onclick="setUserId()" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
@@ -112,6 +112,13 @@
             document.querySelectorAll(".delete-btn").forEach(element => {
                 element.onclick = (e) => {
                     deleteId = e.target.id;
+                }
+            })
+
+            // Update button onclick
+            document.querySelectorAll(".update-btn").forEach(element => {
+                element.onclick = (e) => {
+                    window.location = "/users/" + e.target.id;
                 }
             })
 
