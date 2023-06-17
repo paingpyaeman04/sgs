@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.ppm.sgs.dtos.UserDto;
+import com.ppm.sgs.dtos.UserUpdateDto;
 import com.ppm.sgs.models.AppUserDetails;
 import com.ppm.sgs.models.Role;
 import com.ppm.sgs.models.User;
@@ -32,13 +32,13 @@ import com.ppm.sgs.services.UserService;
 @RequestMapping(path = "/users")
 @SessionAttributes("userType")
 public class UserController {
-    
-    @Autowired
+
+	@Autowired
 	private UserService userService;
 
-    @Autowired
-    private RoleService roleService;
-	
+	@Autowired
+	private RoleService roleService;
+
 	@GetMapping("/all")
 	public String getAll(ModelMap map) {
 		List<User> users = userService.getAllUsers();
@@ -46,7 +46,7 @@ public class UserController {
 		map.addAttribute("userType", "all");
 		return "users";
 	}
-	
+
 	@GetMapping("/pending")
 	public String getPending(ModelMap map) {
 		List<User> users = userService.getPendingUsers();
@@ -62,96 +62,107 @@ public class UserController {
 		map.addAttribute("userType", "verified");
 		return "users";
 	}
-	
+
 	@GetMapping("/{id}")
 	public String updateForm(@PathVariable("id") String id, ModelMap map) {
 		User user = userService.getById(id);
 
-        List<Integer> roleIds = user.getRoles().stream().map(role -> role.getId()).collect(Collectors.toList());
-		UserDto updateDto = new UserDto(user.getId(), user.getName(), user.getUsername(), user.getEmail(), user.getPassword(), user.getPassword(), user.getEnabled(), roleIds);
-		map.addAttribute("muser", updateDto);
+		List<Integer> roleIds = user.getRoles().stream().map(role -> role.getId()).collect(Collectors.toList());
+		UserUpdateDto updateDto = new UserUpdateDto(user.getId(), user.getName(), user.getUsername(), user.getEmail(),
+				user.getPassword(), user.getPassword(), user.getEnabled(), roleIds);
+		map.addAttribute("updateUser", updateDto);
 		return "user-update";
 	}
-	
+
 	@PostMapping("/update")
-	public String update(HttpSession session, ModelMap map, @Valid @ModelAttribute("muser") UserDto updateDto, BindingResult result) {		
-		if(result.hasErrors()) {
+	public String update(Authentication authentication, ModelMap map,
+			@Valid @ModelAttribute("updateUser") UserUpdateDto updateDto, BindingResult result) {
+		if (result.hasErrors()) {
 			return "user-update";
 		}
-		User user = new User(updateDto.getId(), updateDto.getName(), updateDto.getUsername(), updateDto.getEmail(), updateDto.getPassword(), updateDto.getEnabled());
-        List<Role> roles = roleService.getRolesByIds(updateDto.getRoleIds());
+		User user = new User(updateDto.getId(), updateDto.getName(), updateDto.getUsername(), updateDto.getEmail(),
+				updateDto.getPassword(), updateDto.getEnabled());
+		List<Role> roles = roleService.getRolesByIds(updateDto.getRoleIds());
 		user.setRoles(roles);
 
 		String msg = userService.update(user);
-		if(msg != null) {
+		if (msg != null) {
 			// failed to update; back to user update
 			map.addAttribute("error", msg);
-			map.addAttribute("muser", updateDto);
+			map.addAttribute("updateUser", updateDto);
 			return "user-update";
 		}
-		
+
 		// update current user
-		User currentUser = (User) session.getAttribute("user");
-		if(currentUser.getId().equals(user.getId())) {
-			session.setAttribute("user", user);
+		AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+		if (userDetails.getId().equals(user.getId())) {
+			userDetails.setFullName(user.getName());
 		}
-		// if pending is true, go to pending
-		boolean pending = (boolean) map.get("pending");
-		if(pending) {
-			map.clear();
-			return "redirect:pending";
+
+		String userType = (String) map.get("userType");
+		if (userType != null) {
+			return getRedirectLink(userType);
 		}
-		map.clear();
+
 		return "redirect:all";
 	}
-	
+
 	@GetMapping("/delete")
 	public String delete(Authentication authentication, @RequestParam("id") String id) {
 		AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
-		if(userDetails.getId().equals(id)) {
+
+		// Do not delete if the user selected is active
+		if (userDetails.getId().equals(id)) {
 			return "redirect:all";
 		}
 		userService.deleteById(id);
 		return "redirect:all";
 	}
-	
+
 	@GetMapping("/add")
 	public String addUserForm(ModelMap map) {
 		map.addAttribute("newUser", new UserDto());
 		return "add-user";
 	}
-	
+
 	@PostMapping("/add")
 	public String add(ModelMap map, @Valid @ModelAttribute("newUser") UserDto newUserDto, BindingResult result) {
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			return "add-user";
 		}
-		
-		User user = new User(null, newUserDto.getName(), newUserDto.getUsername(), newUserDto.getEmail(), newUserDto.getPassword(), newUserDto.getEnabled());
+
+		User user = new User(null, newUserDto.getName(), newUserDto.getUsername(), newUserDto.getEmail(),
+				newUserDto.getPassword(), newUserDto.getEnabled());
 		List<Role> roles = roleService.getRolesByIds(newUserDto.getRoleIds());
 		user.setRoles(roles);
-		
+
 		String msg = userService.save(user);
-		if(msg != null) {
+		if (msg != null) {
 			// failed to update; back to user update
 			map.addAttribute("error", msg);
 			return "add-user";
 		}
+
+		String userType = (String) map.get("userType");
+		if (userType != null) {
+			return getRedirectLink(userType);
+		}
+
 		return "redirect:all";
 	}
-	
+
 	@GetMapping("/search")
 	public String search(ModelMap map, @RequestParam("id") String id, @RequestParam("name") String name) {
 		List<User> users = userService.searchByIdOrName(id, name);
 		map.addAttribute("users", users);
-		map.addAttribute("pending", false);
+		map.addAttribute("userType", "all");
 		return "users";
 	}
 
-    @ModelAttribute("roles")
-    public List<Role> getAllRoles() {
-        return roleService.getAllRoles();
-    }
+	@ModelAttribute("roles")
+	public List<Role> getAllRoles() {
+		return roleService.getAllRoles();
+	}
 
 	@ModelAttribute("userTypes")
 	public Map<String, String> getUserTypes() {
@@ -160,6 +171,18 @@ public class UserController {
 		userTypes.put("pending", "Pending");
 		userTypes.put("verified", "Verified");
 		return userTypes;
+	}
+
+	private String getRedirectLink(String userType) {
+
+		if (userType.equals("pending")) {
+			return "redirect:pending";
+		} else if (userType.equals("verified")) {
+			return "redirect:verified";
+		} else {
+			return "redirect:all";
+		}
+
 	}
 
 }
