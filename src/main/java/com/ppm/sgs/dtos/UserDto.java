@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.ppm.sgs.constants.OperationType;
 import com.ppm.sgs.validators.ValidPassword;
 
 public class UserDto {
@@ -32,7 +33,7 @@ public class UserDto {
 
 	@Length(max = 255, message = "{user.valid.password.length}")
 	@NotBlank(message = "{user.valid.password.notblank}")
-	@ValidPassword
+	@ValidPassword(operation = OperationType.ADD)
 	private String password;
 
 	@Length(max = 255, message = "{user.valid.password.length}")
