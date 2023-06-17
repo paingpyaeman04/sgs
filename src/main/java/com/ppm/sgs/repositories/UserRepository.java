@@ -12,9 +12,15 @@ import com.ppm.sgs.models.User;
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByEmail(String email);
+
     List<User> findByEnabled(Boolean isEnabled);
 
-    List<User> findByIdOrName(String id, String name);
+    List<User> findByIdContaining(String id);
+
+    List<User> findByNameContaining(String name);
+
+    List<User> findByIdContainingAndNameContaining(String id, String name);
 
     Optional<User> findFirstByOrderByIdDesc();
 
