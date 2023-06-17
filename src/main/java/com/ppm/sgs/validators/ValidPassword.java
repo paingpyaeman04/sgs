@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import com.ppm.sgs.constants.OperationType;
+
 @Documented
 @Constraint(validatedBy = PasswordConstraintValidator.class)
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
@@ -22,4 +24,6 @@ public @interface ValidPassword {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    OperationType operation();
 }

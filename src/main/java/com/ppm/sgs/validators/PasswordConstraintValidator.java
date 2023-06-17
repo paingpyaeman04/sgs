@@ -14,10 +14,23 @@ import org.passay.PasswordValidator;
 import org.passay.RuleResult;
 import org.passay.WhitespaceRule;
 
+import com.ppm.sgs.constants.OperationType;
+
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
+
+    private OperationType opType;
+
+    @Override
+    public void initialize(ValidPassword constraintAnnotation) {
+         opType = constraintAnnotation.operation();
+    }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if(opType == OperationType.UPDATE && value.isEmpty()) {
+            return true;
+        }
+
         PasswordValidator validator = new PasswordValidator(Arrays.asList(
                 new LengthRule(8, 24),
                 new CharacterRule(EnglishCharacterData.UpperCase, 1),
