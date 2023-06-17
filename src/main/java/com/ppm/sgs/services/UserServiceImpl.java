@@ -3,7 +3,6 @@ package com.ppm.sgs.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +13,7 @@ import com.ppm.sgs.exceptions.UserNotFoundException;
 import com.ppm.sgs.exceptions.UsernameAlreadyExistsException;
 import com.ppm.sgs.models.User;
 import com.ppm.sgs.repositories.UserRepository;
+import com.ppm.sgs.utils.CustomBeanUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -47,7 +47,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> searchByIdOrName(String id, String name) {
-        return userRepository.findByIdOrName(id, name);
+        if (id.isEmpty() && !name.isEmpty()) {
+            return userRepository.findByNameContaining(name);
+        } else if (!id.isEmpty() && name.isEmpty()) {
+            return userRepository.findByIdContaining(id);
+        } else if (!id.isEmpty() && !name.isEmpty()) {
+            return userRepository.findByIdContainingAndNameContaining(id, name);
+        } else {
+            return userRepository.findAll();
+        }
     }
 
     /**
@@ -66,11 +74,11 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         try {
-            if(userRepository.existsByUsername(user.getUsername())) {
+            if (userRepository.existsByUsername(user.getUsername())) {
                 throw new UsernameAlreadyExistsException("Username already exists.");
             }
 
-            if(userRepository.existsByEmail(user.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail())) {
                 throw new EmailAlreadyExistsException("Email already exists.");
             }
 
@@ -89,16 +97,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public String update(User user) {
         try {
-            if(userRepository.existsByUsername(user.getUsername())) {
+            Optional<User> userOpt = userRepository.findByUsername(user.getUsername());
+            if (userOpt.isPresent() && !userOpt.get().getId().equals(user.getId())) {
                 throw new UsernameAlreadyExistsException("Username already exists.");
             }
 
-            if(userRepository.existsByEmail(user.getEmail())) {
+            userOpt = userRepository.findByEmail(user.getEmail());
+            if (userOpt.isPresent() && !userOpt.get().getId().equals(user.getId())) {
                 throw new EmailAlreadyExistsException("Email already exists.");
             }
 
-            User oldUser = userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("User not found with id: " + user.getId()));
-            BeanUtils.copyProperties(user, oldUser, "id");
+            User oldUser = userRepository.findById(user.getId())
+                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + user.getId()));
+            if (user.getPassword() != null || !user.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+            CustomBeanUtils.copyNonNullProperties(user, oldUser, "id");
             userRepository.saveAndFlush(oldUser);
         } catch (UsernameAlreadyExistsException e) {
             return e.getMessage();
