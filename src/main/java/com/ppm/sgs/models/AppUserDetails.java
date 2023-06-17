@@ -33,6 +33,10 @@ public class AppUserDetails implements UserDetails {
         return user.getName();
     }
 
+    public void setFullName(String fullName) {
+        user.setName(fullName);
+    }
+
     @Override
     public String getUsername() {
         return user.getUsername();
