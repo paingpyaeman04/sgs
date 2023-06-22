@@ -21,6 +21,12 @@
                         <!-- Main Content -->
                         <div class="row mb-4 mt-4">
                             <h3 class="col col-3 offset-2 fw-semibold">Add User</h3>
+                            <div th:if="${error}" class="col d-flex align-items-center">
+                                <span class="error" th:text="${error}"></span>
+                            </div>
+                            <div th:if="${success}" class="col d-flex align-items-center">
+                                <span class="text-success" th:text="${success}"></span>
+                            </div>
                         </div>
                         <form id="user-form" th:action="@{/users/add}" method="post" th:object="${newUser}">
                             <div class="row mb-3" id="name-input-row">
@@ -93,9 +99,6 @@
                                 </div>
                                 <div class="col-1 d-flex pe-0">
                                     <a onclick="history.back()" class="btn btn-secondary flex-fill">Cancel</a>
-                                </div>
-                                <div class="col d-flex align-items-center">
-                                    <span class="error" th:text="${error}"></span>
                                 </div>
                             </div>
                         </form>
