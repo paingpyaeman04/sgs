@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ppm.sgs.dtos.UserDto;
 import com.ppm.sgs.dtos.UserUpdateDto;
@@ -126,7 +127,8 @@ public class UserController {
 	}
 
 	@PostMapping("/add")
-	public String add(ModelMap map, @Valid @ModelAttribute("newUser") UserDto newUserDto, BindingResult result) {
+	public String add(RedirectAttributes redirectAttributes, ModelMap map, @Valid @ModelAttribute("newUser") UserDto newUserDto, BindingResult result) {
+		// return "users";
 		if (result.hasErrors()) {
 			return "add-user";
 		}
@@ -143,12 +145,13 @@ public class UserController {
 			return "add-user";
 		}
 
-		String userType = (String) map.get("userType");
-		if (userType != null) {
-			return getRedirectLink(userType);
-		}
+		// String userType = (String) map.get("userType");
+		// if (userType != null) {
+		// 	return getRedirectLink(userType);
+		// }
 
-		return "redirect:all";
+		redirectAttributes.addFlashAttribute("success", "User is successfully added.");
+		return "redirect:add";
 	}
 
 	@GetMapping("/search")
