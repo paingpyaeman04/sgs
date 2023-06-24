@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ppm.sgs.constants.Constants;
 import com.ppm.sgs.exceptions.EmailAlreadyExistsException;
 import com.ppm.sgs.exceptions.UserNotFoundException;
 import com.ppm.sgs.exceptions.UsernameAlreadyExistsException;
@@ -30,13 +33,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getPendingUsers() {
-        return userRepository.findByEnabled(false);
+    public Page<User> getUsers(int currentPage) {
+        PageRequest pageable = PageRequest.of(currentPage, Constants.USER_PAGE_SIZE);
+        return userRepository.findAll(pageable);
     }
 
     @Override
-    public List<User> getVerifiedUsers() {
-        return userRepository.findByEnabled(true);
+    public Page<User> getPendingUsers(int currentPage) {
+        PageRequest pageable = PageRequest.of(currentPage, Constants.USER_PAGE_SIZE);
+        return userRepository.findByEnabled(false, pageable);
+    }
+
+    @Override
+    public Page<User> getVerifiedUsers(int currentPage) {
+        PageRequest pageable = PageRequest.of(currentPage, Constants.USER_PAGE_SIZE);
+        return userRepository.findByEnabled(true, pageable);
     }
 
     @Override

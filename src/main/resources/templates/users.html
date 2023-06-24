@@ -15,7 +15,7 @@
             <div th:replace="fragments::header"></div>
             <div class="row main-content">
                 <div th:replace="fragments::sidebar"></div>
-                <div class="col bg-success bg-opacity-10">
+                <div class="col bg-success bg-opacity-10 d-flex flex-column ">
                     <div
                         class="container-fluid content-area">
                         <!-- Main Content -->
@@ -32,8 +32,7 @@
                             <div class="col col-6 col-md-1">
                                 <button class="btn btn-secondary" type="reset">Reset</button>
                             </div>
-                            <div
-                                class="col col-12 col-md-2 d-flex align-items-center">
+                            <div class="col col-12 col-md-2 d-flex align-items-center">
                                 <select class="form-select" name="userType" id="select-user-type">
                                     <option th:each="type : ${userTypes.entrySet()}" th:value="${type.key}" th:text="${type.value}" th:selected="${type.key == userType}"></option>
                                 </select>
@@ -49,7 +48,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody th:each="user : ${users}">
+                            <tbody th:each="user : ${userPage.content}">
                                 <tr>
                                     <td th:text="${user.id}"></td>
                                     <td th:text="${user.name}"></td>
@@ -82,8 +81,14 @@
                             </tbody>
                         </table>
                     </div>
+                    <ul class="pagination mt-auto ms-3" th:if="${userPage.totalPages > 0}">
+                        <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                            <a th:href="@{|/users/${userType}?page=${pageNumber}|}" th:text="${pageNumber}" class="page-link" th:classappend="${pageNumber==userPage.number + 1} ? active"></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
+            
             <div th:replace="fragments::footer"></div>
         </div>
         <script>

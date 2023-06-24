@@ -3,11 +3,15 @@ package com.ppm.sgs.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -40,27 +44,59 @@ public class UserController {
 	@Autowired
 	private RoleService roleService;
 
-	@GetMapping("/all")
-	public String getAll(ModelMap map) {
-		List<User> users = userService.getAllUsers();
-		map.addAttribute("users", users);
+	@GetMapping("all")
+	public String getAll(@RequestParam("page") Optional<Integer> page, ModelMap map) {
+		int currentPage = page.orElse(1);
+		Page<User> userPage = userService.getUsers(currentPage - 1);
+		map.addAttribute("userPage", userPage);
 		map.addAttribute("userType", "all");
+
+		int totalPages = userPage.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			map.addAttribute("pageNumbers", pageNumbers);
+		}
+
 		return "users";
 	}
 
 	@GetMapping("/pending")
-	public String getPending(ModelMap map) {
-		List<User> users = userService.getPendingUsers();
-		map.addAttribute("users", users);
+	public String getPending(@RequestParam("page") Optional<Integer> page, ModelMap map) {
+		int currentPage = page.orElse(1);
+		Page<User> userPage = userService.getPendingUsers(currentPage - 1);
+		map.addAttribute("userPage", userPage);
+
+		int totalPages = userPage.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			map.addAttribute("pageNumbers", pageNumbers);
+		}
 		map.addAttribute("userType", "pending");
 		return "users";
 	}
 
 	@GetMapping("/verified")
-	public String getVerified(ModelMap map) {
-		List<User> users = userService.getVerifiedUsers();
-		map.addAttribute("users", users);
+	public String getVerified(@RequestParam("page") Optional<Integer> page, ModelMap map) {
+		int currentPage = page.orElse(1);
+		Page<User> userPage = userService.getVerifiedUsers(currentPage - 1);
+		map.addAttribute("userPage", userPage);
+
+		int totalPages = userPage.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+			map.addAttribute("pageNumbers", pageNumbers);
+		}
 		map.addAttribute("userType", "verified");
+		return "users";
+	}
+
+	@GetMapping("/search")
+	public String search(ModelMap map, @RequestParam("id") String id,
+			@RequestParam("name") String name) {
+		List<User> users = userService.searchByIdOrName(id, name);
+		Page<User> userPage = new PageImpl<>(users);
+		map.addAttribute("userPage", userPage);
+		map.addAttribute("userType", "all");
 		return "users";
 	}
 
@@ -127,8 +163,8 @@ public class UserController {
 	}
 
 	@PostMapping("/add")
-	public String add(RedirectAttributes redirectAttributes, ModelMap map, @Valid @ModelAttribute("newUser") UserDto newUserDto, BindingResult result) {
-		// return "users";
+	public String add(RedirectAttributes redirectAttributes, ModelMap map,
+			@Valid @ModelAttribute("newUser") UserDto newUserDto, BindingResult result) {
 		if (result.hasErrors()) {
 			return "add-user";
 		}
@@ -147,19 +183,11 @@ public class UserController {
 
 		// String userType = (String) map.get("userType");
 		// if (userType != null) {
-		// 	return getRedirectLink(userType);
+		// return getRedirectLink(userType);
 		// }
 
 		redirectAttributes.addFlashAttribute("success", "User is successfully added.");
 		return "redirect:add";
-	}
-
-	@GetMapping("/search")
-	public String search(ModelMap map, @RequestParam("id") String id, @RequestParam("name") String name) {
-		List<User> users = userService.searchByIdOrName(id, name);
-		map.addAttribute("users", users);
-		map.addAttribute("userType", "all");
-		return "users";
 	}
 
 	@ModelAttribute("roles")
