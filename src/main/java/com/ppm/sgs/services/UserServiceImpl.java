@@ -129,4 +129,10 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public List<User> getLecturers() {
+        List<User> users = userRepository.findUsersByRole("LECTURER");
+        return users;
+    }
+
 }

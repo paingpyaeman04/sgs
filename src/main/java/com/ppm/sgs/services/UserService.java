@@ -11,6 +11,8 @@ public interface UserService {
 
     List<User> getVerifiedUsers();
 
+    List<User> getLecturers();
+
     User getById(String id);
 
     List<User> searchByIdOrName(String id, String name);
