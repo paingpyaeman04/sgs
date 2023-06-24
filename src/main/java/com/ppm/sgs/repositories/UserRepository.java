@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ppm.sgs.models.User;
@@ -21,6 +22,9 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findByNameContaining(String name);
 
     List<User> findByIdContainingAndNameContaining(String id, String name);
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name LIKE %?1%")
+    List<User> findUsersByRole(String role);
 
     Optional<User> findFirstByOrderByIdDesc();
 
