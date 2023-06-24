@@ -47,6 +47,7 @@ public class BatchController {
     @PostMapping("add")
     public String addNewBatch(ModelMap map, @Valid @ModelAttribute("batch") BatchDto batchDto, BindingResult result) {
         if(result.hasErrors()) {
+            map.addAttribute("courseId", batchDto.getCourseId());
             return "add-batch";
         }
         
