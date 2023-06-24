@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ppm.sgs.constants.Status;
+import com.ppm.sgs.models.Batch;
 import com.ppm.sgs.models.Course;
+import com.ppm.sgs.services.BatchService;
 import com.ppm.sgs.services.CourseService;
 
 @Controller
@@ -30,6 +32,9 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private BatchService batchService;
 
     @GetMapping("/add")
     public String addCourseForm(ModelMap map) {
@@ -96,6 +101,24 @@ public class CourseController {
         return "redirect:all";
     }
 
+    // Batches
+    @GetMapping("/{course-id}/batches")
+    public String getBatchesInCourse(@PathVariable("course-id") String courseId, ModelMap map) {
+        Status statusType = (Status) map.getAttribute("statusType");
+        Course course = courseService.getById(courseId);
+        List<Batch> batches = null;
+        if (statusType == Status.ARCHIVED) {
+            batches = batchService.getArchivedBatchesByCourse(course);
+        } else {
+            batches = batchService.getActiveBatchesByCourse(course);
+        }
+
+        map.addAttribute("batches", batches);
+        map.addAttribute("course", course);
+        return "batches";
+    }
+
+    // Model Attributes
     @ModelAttribute("statusTypes")
     public Map<Status, Integer> statusTypes() {
         Map<Status, Integer> statusTypes = new LinkedHashMap<>();
