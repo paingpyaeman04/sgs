@@ -64,12 +64,13 @@ public class BatchServiceImpl implements BatchService {
         // prepare batch obj
         List<Batch> batches = batchRepository.findByCourseIdOrderByNumberDesc(courseId);
         short number = 1;
-        if(batches.size() > 0) {
+        if (batches.size() > 0) {
             number = batches.get(0).getNumber();
             number++;
         }
-        
-        Batch batch = new Batch(null, number++, course, batchDto.getStartDate(), batchDto.getEndDate(), lecturer, Status.ACTIVE, null);
+
+        Batch batch = new Batch(null, number++, course, batchDto.getStartDate(), batchDto.getEndDate(), lecturer,
+                Status.ACTIVE, null);
         return batch;
     }
 
@@ -86,7 +87,7 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public List<Batch> getAttendedBatches(List<Batch> batches) {
         List<Batch> finishedBatches = batches.stream().filter(batch -> {
-            if(batch.getEndDate() == null) {
+            if (batch.getEndDate() == null) {
                 return false;
             }
             return batch.getEndDate().before(new Date());
@@ -96,14 +97,25 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public Batch getById(Integer id) {
-        return batchRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Batch not found with id: " + id));
+        return batchRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Batch not found with id: " + id));
     }
 
     @Override
     public void removeStudent(Integer batchId, String studentId) {
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + studentId));
         student.getBatches().removeIf(batch -> batch.getId().equals(batchId));
         studentRepository.saveAndFlush(student);
+    }
+
+    @Override
+    public void deleteBatch(Integer id) {
+        List<Student> students = studentRepository.findByBatchesId(id);
+        students.forEach(std -> std.getBatches().removeIf(batch -> batch.getId().equals(id)));
+        System.out.println(students.size());
+        studentRepository.saveAll(students);
+        batchRepository.deleteById(id);
     }
 
 }
