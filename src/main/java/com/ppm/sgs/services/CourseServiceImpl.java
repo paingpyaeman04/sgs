@@ -11,6 +11,7 @@ import com.ppm.sgs.exceptions.ResourceAlreadyExistsException;
 import com.ppm.sgs.exceptions.ResourceNotFoundException;
 import com.ppm.sgs.models.Course;
 import com.ppm.sgs.repositories.CourseRepository;
+import com.ppm.sgs.utils.CustomBeanUtils;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -59,6 +60,30 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public String update(Course course) {
+        try {
+            Optional<Course> courseOpt = courseRepository.findByName(course.getName());
+            if (courseOpt.isPresent() && !courseOpt.get().getId().equals(course.getId())) {
+                throw new ResourceAlreadyExistsException("Course name already exists.");
+            }
+
+            Course oldCourse = courseRepository.findById(course.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + course.getId()));
+            CustomBeanUtils.copyNonNullProperties(course, oldCourse, "id");
+            courseRepository.saveAndFlush(oldCourse);
+        } catch (ResourceAlreadyExistsException e) {
+            return e.getMessage();
+        } catch (ResourceNotFoundException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Unknown error";
+        }
+
+        return null;
+    }
+
+    @Override
     public void deleteById(String id) {
         courseRepository.deleteById(id);
     }
@@ -72,15 +97,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findByName(String name) {
+    public Optional<Course> findByName(String name) {
         return courseRepository.findByName(name);
     }
 
     @Override
     public void restoreById(String id) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
         course.setStatus(Status.ACTIVE);
         courseRepository.saveAndFlush(course);
+    }
+
+    @Override
+    public List<Course> searchByName(String name) {
+        return courseRepository.findByNameContaining(name);
     }
 
 }
