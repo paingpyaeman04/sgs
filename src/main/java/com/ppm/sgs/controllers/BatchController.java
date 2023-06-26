@@ -10,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,6 +56,19 @@ public class BatchController {
         batchService.save(batch);
 
         return "redirect:/courses/" + batchDto.getCourseId() + "/batches";
+    }
+
+    @GetMapping("{id}")
+    public String batchDetail(@PathVariable("id") Integer id, ModelMap map) {
+        Batch batch = batchService.getById(id);
+        map.addAttribute("batch", batch);
+        return "batch-detail";
+    }
+
+    @GetMapping("/remove")
+    public String removeStudent(@RequestParam("id") Integer batchId, @RequestParam("student-id") String studentId) {
+        batchService.removeStudent(batchId, studentId);
+        return "redirect:" + batchId;
     }
 
     /* Model Attributes */ 
