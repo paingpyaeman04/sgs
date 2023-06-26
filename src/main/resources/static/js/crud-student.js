@@ -92,3 +92,7 @@ function addStudent() {
     document.getElementById("add-student-form").submit();
   }
 }
+
+function updateStudent() {
+  document.getElementById("update-student-form").submit();
+}
