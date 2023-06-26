@@ -12,7 +12,8 @@ import com.ppm.sgs.models.Course;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
     Optional<Course> findFirstByOrderByIdDesc();
-    List<Course> findByName(String name);
+    Optional<Course> findByName(String name);
     List<Course> findByStatus(Status status);
     boolean existsByName(String name);
+    List<Course> findByNameContaining(String name);
 }
