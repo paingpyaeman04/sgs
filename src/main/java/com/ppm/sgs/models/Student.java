@@ -1,15 +1,22 @@
 package com.ppm.sgs.models;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +43,6 @@ public class Student {
     @NotNull(message = "{student.valid.dob.notnull}")
     private Date dob;
 
-    @NotBlank(message = "{student.valid.gender.notblank}")
     private Character gender;
 
     @Length(max = 13, message = "{student.valid.phone.length}")
@@ -49,4 +55,9 @@ public class Student {
 
     @Length(max = 65535, message = "{student.valid.description.length}")
     private String description;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "students_batches", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "batch_id"))
+    @JsonIgnoreProperties("students")
+    private List<Batch> batches;
 }
