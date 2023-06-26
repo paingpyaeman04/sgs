@@ -1,6 +1,7 @@
 package com.ppm.sgs.dtos;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentDto {
+
+    private String id;
+
     @Length(max = 70, message = "{student.valid.name.length}")
     @NotBlank(message = "{student.valid.name.notblank}")
     private String name;
@@ -35,10 +39,11 @@ public class StudentDto {
     @NotBlank(message = "{student.phone.valid.notblank}")
     private String phone;
 
-    @NotNull(message = "{student.photo.valid.notnull}")
     private MultipartFile photo;
 
     @Length(max = 65535, message = "{student.valid.description.length}")
     private String description;
+
+    private List<Integer> batchIds;
     
 }
