@@ -17,4 +17,6 @@ public interface StudentRepository extends JpaRepository<Student, String> {
 
     @Query("SELECT s FROM Student s WHERE (:id is null or s.id LIKE :id) AND (:name is null or s.name LIKE :name)")
     List<Student> findByIdAndName(String id, String name);
+
+    List<Student> findByBatchesId(Integer batchId);
 }
