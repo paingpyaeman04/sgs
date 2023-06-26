@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Students</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <link rel="stylesheet" th:href="@{/styles/main.css}">
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container-fluid d-flex flex-column vh-100">
+            <div th:replace="fragments::header"></div>
+            <div class="row main-content">
+                <div th:replace="fragments::sidebar"></div>
+                <div class="col bg-success bg-opacity-10 d-flex flex-column ">
+                    <div
+                        class="container-fluid content-area">
+                        <!-- Main Content -->
+                        <form class="row p-3" action="/students/search" method="get">
+                            <div class="col col-12 col-md-3">
+                                <input class="form-control" type="text" placeholder="Student ID" name="id">
+                            </div>
+                            <div class="col col-12 col-md-3">
+                                <input class="form-control" type="text" placeholder="Name" name="name">
+                            </div>
+                            <div class="col col-6 col-md-1">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                            <div class="col col-6 col-md-1">
+                                <button class="btn btn-secondary" type="reset">Reset</button>
+                            </div>
+
+                        </form>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Details</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody th:each="student : ${studentPage.content}">
+                                <tr>
+                                    <td th:text="${student.id}"></td>
+                                    <td th:text="${student.name}"></td>
+                                    <td>
+                                        <button th:id="${student.id}" class="btn btn-success update-btn">Update</button>
+                                    </td>
+                                    <td>
+                                        <button th:id="${student.id}" onclick="setStudentId()" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
+                                    </td>
+                                    <!-- Delete modal -->
+                                    <div class="modal fade" id="confirm-delete">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h3 class="text-danger">Confirm Delete</h3>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="fs-5">Are you sure to delete the selected student?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteSelectedStudent()">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination mt-auto ms-3" th:if="${studentPage.totalPages > 0}">
+                        <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                            <a th:href="@{|/users/all?page=${pageNumber}|}" th:text="${pageNumber}" class="page-link" th:classappend="${pageNumber==studentPage.number + 1} ? active"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div th:replace="fragments::footer"></div>
+        </div>
+        <script>
+            var deleteId;
+
+            // Delete buttons listener
+            document.querySelectorAll(".delete-btn").forEach(element => {
+                element.onclick = (e) => {
+                    deleteId = e.target.id;
+                }
+            })
+
+            // Update button onclick
+            document.querySelectorAll(".update-btn").forEach(element => {
+                element.onclick = (e) => {
+                    window.location = "/students/" + e.target.id;
+                }
+            })
+
+            function deleteSelectedStudent() {
+                window.location.href = "/students/delete?id=" + deleteId;
+            }
+        </script>
+    </body>
+</html>
