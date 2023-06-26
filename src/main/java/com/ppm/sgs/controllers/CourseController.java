@@ -3,6 +3,8 @@ package com.ppm.sgs.controllers;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -76,16 +78,40 @@ public class CourseController {
     }
 
     @GetMapping("{id}")
-    public String courseDetails(@PathVariable("id") String id, ModelMap map) {
+    public String displayUpdateCourseForm(@PathVariable("id") String id, ModelMap map) {
         Course course = courseService.getById(id);
         map.addAttribute("course", course);
-        return "course-details";
+        return "course-update";
+    }
+
+    @PostMapping("update")
+    public String updateCourse(@Valid @ModelAttribute("course") Course course,
+            BindingResult result, ModelMap map) {
+        if (result.hasErrors()) {
+            return "course-update";
+        }
+
+        String msg = courseService.update(course);
+        if (msg != null) {
+			// failed to update; back to course update
+			map.addAttribute("error", msg);
+			return "course-update";
+		}
+
+        return "redirect:all";
     }
 
     @GetMapping("/search")
-    public String search(ModelMap map, @RequestParam("name") String name) {
-        List<Course> courses = courseService.findByName(name);
+    public String search(ModelMap map, @RequestParam("name") String name, @RequestParam(name = "statusType", required = false) Optional<Integer> statusOpt) {
+        int status = statusOpt.orElse(0);
+        Status statusType =  status == 1 ? Status.ARCHIVED : Status.ACTIVE;
+        List<Course> courses = courseService.searchByName(name);
+
+        // filter acccording to type
+        courses = courses.stream().filter(course -> course.getStatus().equals(statusType)).collect(Collectors.toList());
+
         map.addAttribute("courses", courses);
+        map.addAttribute("statusType", statusType);
         return "courses";
     }
 
