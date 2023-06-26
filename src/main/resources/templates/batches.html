@@ -66,14 +66,35 @@
                                         <button th:id="${batch.id}" class="btn btn-success view-btn">View</button>
                                     </td>
                                     
-                                    <td th:if="${statusType.name() == 'ACTIVE'}">
+                                    <td>
+                                        <button th:id="${batch.id}" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
+                                    </td>
+                                    <!-- Delete modal -->
+                                    <div class="modal fade" id="confirm-delete">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h3 class="text-danger">Confirm Delete</h3>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="fs-5">Are you sure to delete the selected batch?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteSelectedBatch()">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <td th:if="${statusType.name() == 'ACTIVE'}">
                                         <button th:id="${batch.id}" class="btn btn-danger archive-btn" data-bs-toggle="modal" data-bs-target="#confirm-archive">Archive</button>
                                     </td>
                                     <td th:if="${statusType.name() == 'ARCHIVED'}">
                                         <button th:id="${batch.id}" class="btn btn-primary restore-btn" data-bs-toggle="modal" data-bs-target="#confirm-restore">Restore</button>
-                                    </td>
+                                    </td> -->
                                     <!-- Archive modal -->
-                                    <div class="modal fade" id="confirm-archive">
+                                    <!-- <div class="modal fade" id="confirm-archive">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -81,18 +102,18 @@
                                                     <button class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p class="fs-5">Are you sure to archive the selected course?</p>
+                                                    <p class="fs-5">Are you sure to archive the selected batch?</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="archiveSelectedCourse()">Archive</button>
+                                                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="archiveSelectedBatch()">Archive</button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Restore Modal -->
-                                    <div class="modal fade" id="confirm-restore">
+                                    <!-- <div class="modal fade" id="confirm-restore">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -108,24 +129,28 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <form th:if="${statusType.name() == 'ACTIVE'}" id="archive-form" th:action="@{batches/archive}" method="post">
+            <form id="delete-form" th:action="@{/batches/delete}" method="post">
+                <input type="hidden" name="batch-id" id="hidden-batch-id">
+                <input type="hidden" name="course-id" th:value="${course.id}">
+            </form>
+            <!-- <form th:if="${statusType.name() == 'ACTIVE'}" id="archive-form" th:action="@{batches/archive}" method="post">
                 <input type="hidden" name="batch-id" id="hidden-batch-id">
             </form>
             <form th:if="${statusType.name() == 'ARCHIVED'}" id="restore-form" th:action="@{batches/restore}" method="post">
                 <input type="hidden" name="batch-id" id="hidden-batch-id">
-            </form>
+            </form> -->
             <div th:replace="fragments::footer"></div>
         </div>
         <script>
             // Archive buttons listener
-            document.querySelectorAll(".archive-btn").forEach(element => {
+            document.querySelectorAll(".delete-btn").forEach(element => {
                 element.onclick = (e) => {
                     document.getElementById("hidden-batch-id").value = e.target.id;
                 }
@@ -144,6 +169,10 @@
                     window.location = "/batches/" + e.target.id;
                 }
             })
+
+            function deleteSelectedBatch() {
+                document.getElementById("delete-form").submit();
+            }
 
             function archiveSelectedCourse() {
                 document.getElementById("archive-form").submit();
