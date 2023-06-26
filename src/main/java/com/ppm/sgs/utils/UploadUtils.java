@@ -17,7 +17,7 @@ public class UploadUtils {
         HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
         httpConn.setRequestMethod("POST");
 
-        httpConn.setRequestProperty("Authorization", "Bearer public_kW15bPcCURDDavMCCYghuArVGKbf");
+        httpConn.setRequestProperty("Authorization", "Bearer " + System.getenv("UPLOAD_TOKEN"));
         httpConn.setRequestProperty("Content-Type", contentType);
         httpConn.setDoOutput(true);
         
