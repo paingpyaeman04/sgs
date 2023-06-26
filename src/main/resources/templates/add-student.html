@@ -64,6 +64,15 @@
                                 <span id="phone-error" class="col col-form-label error" th:errors="*{phone}"></span>
 
                             </div>
+                            <div class="row mb-3" id="batches-input-row">
+                                <label class="offset-2 col-2 col-form-label" for="batches">Batches</label>
+                                <div class="col-4 d-flex flex-column">
+                                    <div th:each="futureBatch : ${futureBatches}" class="me-3">
+                                        <input th:field="*{batchIds}" class="form-check-input me-1" type="checkbox" name="roles" th:text="${{futureBatch.course.name} + ' (Batch - ' + {futureBatch.number} + ')'}" th:value="${futureBatch.id}">
+                                    </div>
+                                </div>
+                                <span id="batches-error" class="col col-form-label error" th:errors="*{batchIds}"></span>
+                            </div>
                             <div class="row mb-3">
                                 <label class="offset-2 col-2 col-form-label" for="photo">Photo</label>
                                 <div class="col-4">
