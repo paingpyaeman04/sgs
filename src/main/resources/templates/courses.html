@@ -20,9 +20,9 @@
                         class="container-fluid content-area">
                         <!-- Main Content -->
                         <form class="row p-3" action="/courses/search" method="get">
-                            <div class="col col-12 col-md-3">
+                            <!-- <div class="col col-12 col-md-3">
                                 <input class="form-control" type="text" placeholder="Course ID" name="id">
-                            </div>
+                            </div> -->
                             <div class="col col-12 col-md-3">
                                 <input class="form-control" type="text" placeholder="Name" name="name">
                             </div>
@@ -45,6 +45,7 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>View Batches</th>
+                                    <th>Update</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -53,7 +54,10 @@
                                     <td th:text="${course.id}"></td>
                                     <td th:text="${course.name}"></td>
                                     <td>
-                                        <button th:id="${course.id}" class="btn btn-success update-btn">View</button>
+                                        <button th:id="${course.id}" class="btn btn-success view-btn">View</button>
+                                    </td>
+                                    <td>
+                                        <button th:id="${course.id}" class="btn btn-success update-btn">Update</button>
                                     </td>
                                     <td th:if="${statusType.name() == 'ACTIVE'}">
                                         <button th:id="${course.id}" class="btn btn-danger archive-btn" data-bs-toggle="modal" data-bs-target="#confirm-archive">Archive</button>
@@ -130,6 +134,13 @@
 
             // Update button onclick
             document.querySelectorAll(".update-btn").forEach(element => {
+                element.onclick = (e) => {
+                    window.location = "/courses/" + e.target.id;
+                }
+            })
+
+            // View button onclick
+            document.querySelectorAll(".view-btn").forEach(element => {
                 element.onclick = (e) => {
                     window.location = "/courses/" + e.target.id + "/batches";
                 }
