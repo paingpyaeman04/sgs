@@ -71,6 +71,12 @@ public class BatchController {
         return "redirect:" + batchId;
     }
 
+    @PostMapping("/delete")
+    public String deleteBatch(@RequestParam("batch-id") Integer batchId, @RequestParam("course-id") String courseId) {
+        batchService.deleteBatch(batchId);
+        return "redirect:/courses/" + courseId + "/batches";
+    }
+
     /* Model Attributes */ 
 
     @ModelAttribute("courses")
