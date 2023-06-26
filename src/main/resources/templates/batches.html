@@ -63,7 +63,7 @@
                                     <td th:text="${#dates.format(batch.startDate, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${batch.lecturer.name}"></td>
                                     <td>
-                                        <button th:id="${batch.id}" class="btn btn-success update-btn">View</button>
+                                        <button th:id="${batch.id}" class="btn btn-success view-btn">View</button>
                                     </td>
                                     
                                     <td th:if="${statusType.name() == 'ACTIVE'}">
@@ -139,9 +139,9 @@
             })
 
             // Update button onclick
-            document.querySelectorAll(".update-btn").forEach(element => {
+            document.querySelectorAll(".view-btn").forEach(element => {
                 element.onclick = (e) => {
-                    window.location = "/courses/" + e.target.id + "/batches";
+                    window.location = "/batches/" + e.target.id;
                 }
             })
 
