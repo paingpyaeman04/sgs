@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.ppm.sgs.constants.Status;
 import com.ppm.sgs.exceptions.ResourceAlreadyExistsException;
 import com.ppm.sgs.exceptions.ResourceNotFoundException;
+import com.ppm.sgs.models.Batch;
 import com.ppm.sgs.models.Course;
+import com.ppm.sgs.repositories.BatchRepository;
 import com.ppm.sgs.repositories.CourseRepository;
 import com.ppm.sgs.utils.CustomBeanUtils;
 
@@ -18,6 +20,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private BatchRepository batchRepository;
 
     @Override
     public List<Course> getAllActiveCourses() {
@@ -93,6 +98,12 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
         course.setStatus(Status.ARCHIVED);
+
+        // set all batches under the course to archived state
+        List<Batch> batches = batchRepository.findByCourse(course);
+        batches.forEach(batch -> batch.setStatus(Status.ARCHIVED));
+        batchRepository.saveAll(batches);
+
         courseRepository.saveAndFlush(course);
     }
 
@@ -106,6 +117,12 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
         course.setStatus(Status.ACTIVE);
+
+        // set all batches under the course to active state
+        List<Batch> batches = batchRepository.findByCourse(course);
+        batches.forEach(batch -> batch.setStatus(Status.ACTIVE));
+        batchRepository.saveAll(batches);
+
         courseRepository.saveAndFlush(course);
     }
 
