@@ -53,10 +53,10 @@
                                 <span id="endDate-error" class="col error" th:errors="*{endDate}"></span>
                             </div>
                             <div class="row mb-3" id="lecturer-input-row">
-                                <label class="offset-2 col-2 col-form-label" for="lecturer">Select Course</label>
+                                <label class="offset-2 col-2 col-form-label" for="lecturer">Select Lecturer</label>
                                 <div class="col col-4 d-flex align-items-center">
                                     <select class="form-select" name="lecturerId" id="select-lecturer">
-                                        <option th:each="lecturer : ${lecturers}" th:value="${lecturer.id}" th:text="${lecturer.name}"></option>
+                                        <option th:each="lecturer : ${lecturers}" th:value="${lecturer.id}" th:text="${lecturer.name}" th:selected="${lecturer.id == batch.lecturerId}"></option>
                                     </select>
                                 </div>
                                 <span id="lecturerId-error" class="col error" th:errors="*{lecturerId}"></span>
