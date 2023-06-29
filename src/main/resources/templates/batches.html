@@ -65,6 +65,9 @@
                                     <td>
                                         <button th:id="${batch.id}" class="btn btn-success view-btn">View</button>
                                     </td>
+                                    <td>
+                                        <button th:id="${batch.id}" class="btn btn-success update-btn">Update</button>
+                                    </td>
                                     
                                     <td>
                                         <button th:id="${batch.id}" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
@@ -163,8 +166,15 @@
                 }
             })
 
-            // Update button onclick
+            // View button onclick
             document.querySelectorAll(".view-btn").forEach(element => {
+                element.onclick = (e) => {
+                    window.location = "/batches/" + e.target.id + "/students";
+                }
+            })
+
+            // View button onclick
+            document.querySelectorAll(".update-btn").forEach(element => {
                 element.onclick = (e) => {
                     window.location = "/batches/" + e.target.id;
                 }
