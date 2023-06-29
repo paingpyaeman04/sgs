@@ -18,6 +18,7 @@ import com.ppm.sgs.repositories.BatchRepository;
 import com.ppm.sgs.repositories.CourseRepository;
 import com.ppm.sgs.repositories.StudentRepository;
 import com.ppm.sgs.repositories.UserRepository;
+import com.ppm.sgs.utils.CustomBeanUtils;
 
 @Service
 public class BatchServiceImpl implements BatchService {
@@ -113,9 +114,16 @@ public class BatchServiceImpl implements BatchService {
     public void deleteBatch(Integer id) {
         List<Student> students = studentRepository.findByBatchesId(id);
         students.forEach(std -> std.getBatches().removeIf(batch -> batch.getId().equals(id)));
-        System.out.println(students.size());
         studentRepository.saveAll(students);
         batchRepository.deleteById(id);
+    }
+
+    @Override
+    public String update(Batch batch) {
+        Batch oldBatch = batchRepository.findById(batch.getId()).orElseThrow(() -> new ResourceNotFoundException("Batch not found with id: " + batch.getId()));
+        CustomBeanUtils.copyNonNullProperties(batch, oldBatch, "id", "number", "course_id");
+        batchRepository.saveAndFlush(oldBatch);
+        return "";
     }
 
 }

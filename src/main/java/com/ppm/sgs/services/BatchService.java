@@ -17,4 +17,5 @@ public interface BatchService {
     Batch getById(Integer id);
     void removeStudent(Integer batchId, String studentId);
     void deleteBatch(Integer id);
+    String update(Batch batch);
 }
