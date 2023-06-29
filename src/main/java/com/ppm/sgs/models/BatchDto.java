@@ -17,6 +17,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BatchDto {
+    private Integer id;
+
     @NotNull(message = "{batchdto.valid.courseid.notnull}")
     private String courseId;
 
