@@ -28,31 +28,26 @@
                             <div class="col col-4">
                                 <div class="fs-5">Lecturer - [[${batch.lecturer.name}]]</div>
                             </div>
-                            <div class="col">
-                                <a class="btn btn-primary">Export</a>
+                            <div class="dropdown col">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Export
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{report/batch-students?type=pdf}">Student List (PDF)</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{report/batch-students?type=xlsx}">Student List (Excel)</a>
+                                    </li>
+                                    <!-- <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Attendance</a>
+                                    </li> -->
+                                </ul>
                             </div>
                         </div>
-                        <input type="hidden" th:value="${batch.id}" id="batch-id">
-                        <!-- <form class="row p-3" action="/batches/search" method="get">
-                                                    <div class="col col-12 col-md-3">
-                                                        <input class="form-control" type="text" placeholder="Course ID" name="id">
-                                                    </div>
-                                                    <div class="col col-12 col-md-3">
-                                                        <input class="form-control" type="text" placeholder="Name" name="name">
-                                                    </div>
-                                                    <div class="col col-6 col-md-1">
-                                                        <button type="submit" class="btn btn-primary">Search</button>
-                                                    </div>
-                                                    <div class="col col-6 col-md-1">
-                                                        <button class="btn btn-secondary" type="reset">Reset</button>
-                                                    </div>
-                                                    <div
-                                                        class="col col-12 col-md-2 d-flex align-items-center">
-                                                        <select class="form-select" name="statusType" id="select-status-type">
-                                                            <option th:each="type : ${statusTypes.entrySet()}" th:value="${type.value}" th:text="${type.key}" th:selected="${type.key == statusType}"></option>
-                                                        </select>
-                                                    </div>
-                                                </form> -->
+                        <input
+                        type="hidden" th:value="${batch.id}" id="batch-id">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -70,7 +65,7 @@
                                         <button th:id="${student.id}" class="btn btn-success update-btn">Detail</button>
                                     </td>
                                     <td>
-                                        <button th:data-courseId="${batch.course.id}" th:id="${student.id}" class="btn btn-danger remove-btn" data-bs-toggle="modal" data-bs-target="#confirm-removal">Remove</button>
+                                        <button th:data-courseid="${batch.course.id}" th:id="${student.id}" class="btn btn-danger remove-btn" data-bs-toggle="modal" data-bs-target="#confirm-removal">Remove</button>
                                     </td>
                                     <!-- Delete modal -->
                                     <div class="modal fade" id="confirm-removal">
@@ -87,6 +82,25 @@
                                                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                     <button class="btn btn-danger" data-bs-dismiss="modal" onclick="removeSelectedStudent()">Remove</button>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Attendance Report Modal -->
+                                    <div class="modal fade" id="attendance-report">
+                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                            <div class="modal-content">
+                                                <div class="modal-heade">Fill up the information</div>
+                                                <div class="modal-body container-fluid">
+                                                    <div class="row">
+                                                        <div class="col"></div>
+                                                        <div class="col"></div>
+                                                    </div>
+                                                    <div class="row">
+
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer"></div>
                                             </div>
                                         </div>
                                     </div>
