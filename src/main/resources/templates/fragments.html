@@ -37,7 +37,7 @@
                         Course Management</button>
                     <div class="collapse" id="course-collapse">
                         <ul class="list-unstyled ms-5 collapse-list">
-                            <li class="mb-2">
+                            <li sec:authorize="hasAnyRole('ADMIN', 'LECTURER')" class="mb-2">
                                 <a th:href="@{/courses/add}" class="link-light rounded text-decoration-none p-1">Add Course</a>
                             </li>
                             <li class="mb-2">
@@ -46,7 +46,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col" sec:authorize="hasRole('ADMIN')">
                     <button class="d-inline-flex align-items-baseline btn btn-toggle collapsed fs-6 fw-semibold link-light" data-bs-toggle="collapse" data-bs-target="#user-collapse" aria-expanded="false">
                         User Management</button>
                     <div class="collapse" id="user-collapse">
