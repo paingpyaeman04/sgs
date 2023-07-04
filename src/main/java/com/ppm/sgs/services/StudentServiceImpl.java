@@ -114,7 +114,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         try {
-            String photoUrl = UploadUtils.dummyUpload(photo.getBytes(), photo.getContentType());
+            String photoUrl = UploadUtils.upload(photo.getBytes(), photo.getContentType());
             student.setPhotoUrl(photoUrl);
         } catch (IOException e) {
             e.printStackTrace();
