@@ -70,7 +70,7 @@
                                     </td>
                                     
                                     <td>
-                                        <button th:id="${batch.id}" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
+                                        <button sec:authorize="hasRole('ADMIN')" th:id="${batch.id}" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
                                     </td>
                                     <!-- Delete modal -->
                                     <div class="modal fade" id="confirm-delete">
