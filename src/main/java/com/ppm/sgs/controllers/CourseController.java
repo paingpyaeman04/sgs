@@ -127,6 +127,12 @@ public class CourseController {
         return "redirect:all";
     }
 
+    @PostMapping("/delete")
+    public String deleteCourse(@RequestParam("course-id") String id) {
+        courseService.deleteById(id);
+        return "redirect:all";
+    }
+
     // Batches
     @GetMapping("/{course-id}/batches")
     public String getBatchesInCourse(@PathVariable("course-id") String courseId, ModelMap map) {
