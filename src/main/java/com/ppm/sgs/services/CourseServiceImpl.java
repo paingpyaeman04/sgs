@@ -90,7 +90,16 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteById(String id) {
-        courseRepository.deleteById(id);
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
+        course.setStatus(Status.DELETED);
+
+        // set all batches under the course to deleted state
+        List<Batch> batches = batchRepository.findByCourse(course);
+        batches.forEach(batch -> batch.setStatus(Status.DELETED));
+        batchRepository.saveAll(batches);
+
+        courseRepository.saveAndFlush(course);
     }
 
     @Override
@@ -105,11 +114,6 @@ public class CourseServiceImpl implements CourseService {
         batchRepository.saveAll(batches);
 
         courseRepository.saveAndFlush(course);
-    }
-
-    @Override
-    public Optional<Course> findByName(String name) {
-        return courseRepository.findByName(name);
     }
 
     @Override
