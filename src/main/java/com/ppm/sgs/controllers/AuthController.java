@@ -40,13 +40,21 @@ public class AuthController {
     }
 
     @GetMapping("/signin")
-    public String loginForm(Model model) {
+    public String loginForm(Model model, Principal p) {
+        if(p != null) {
+            return "redirect:/";
+        }
+
         model.addAttribute("loginDto", new LoginDto());
         return "login";
     }
 
     @GetMapping("/register")
-    public String registerForm(ModelMap map) {
+    public String registerForm(ModelMap map, Principal p) {
+        if(p != null) {
+            return "redirect:/";
+        }
+
         map.addAttribute("newUser", new UserDto());
         return "register";
     }
