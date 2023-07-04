@@ -77,7 +77,7 @@
                     </div>
                     <ul class="pagination mt-auto ms-3" th:if="${studentPage.totalPages > 0}">
                         <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                            <a th:href="@{|/users/all?page=${pageNumber}|}" th:text="${pageNumber}" class="page-link" th:classappend="${pageNumber==studentPage.number + 1} ? active"></a>
+                            <a th:href="@{|/students/all?page=${pageNumber}|}" th:text="${pageNumber}" class="page-link" th:classappend="${pageNumber==studentPage.number + 1} ? active"></a>
                         </li>
                     </ul>
                 </div>
