@@ -65,6 +65,9 @@
                                     <td th:if="${statusType.name() == 'ARCHIVED'}">
                                         <button th:id="${course.id}" class="btn btn-primary restore-btn" data-bs-toggle="modal" data-bs-target="#confirm-restore">Restore</button>
                                     </td>
+                                    <td sec:authorize="hasRole('ADMIN')" th:if="${statusType.name() == 'ARCHIVED'}">
+                                        <button th:id="${course.id}" class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</button>
+                                    </td>
                                     <!-- Archive modal -->
                                     <div class="modal fade" id="confirm-archive">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -102,6 +105,25 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="confirm-delete">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h3 class="text-danger">Confirm Delete</h3>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="fs-5">Are you sure to delete the selected course?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteSelectedCourse()">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </tr>
                             </tbody>
                         </table>
@@ -113,6 +135,9 @@
             </form>
             <form th:if="${statusType.name() == 'ARCHIVED'}" id="restore-form" action="/courses/restore" method="post">
                 <input type="hidden" name="course-id" id="hidden-course-id">
+            </form>
+            <form th:if="${statusType.name() == 'ARCHIVED'}" id="delete-form" action="/courses/delete" method="post">
+                <input type="hidden" name="course-id" id="del-course-id">
             </form>
             <div th:replace="fragments::footer"></div>
         </div>
@@ -129,6 +154,13 @@
             document.querySelectorAll(".restore-btn").forEach(element => {
                 element.onclick = (e) => {
                     document.getElementById("hidden-course-id").value = e.target.id;
+                }
+            })
+
+            // Delete buttons listener
+            document.querySelectorAll(".delete-btn").forEach(element => {
+                element.onclick = (e) => {
+                    document.getElementById("del-course-id").value = e.target.id;
                 }
             })
 
@@ -152,6 +184,10 @@
 
             function restoreSelectedCourse() {
                 document.getElementById("restore-form").submit();
+            }
+
+            function deleteSelectedCourse() {
+                document.getElementById("delete-form").submit();
             }
 
             // status type selection
