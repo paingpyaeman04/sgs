@@ -11,6 +11,19 @@ import org.hibernate.validator.constraints.Length;
 
 import com.ppm.sgs.constants.Status;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -31,66 +44,5 @@ public class Course {
 
     @NotNull(message = "{course.valid.status.notnull}")
     private Status status = Status.ACTIVE;
-
-    public Course() {
-    }
-
-    public Course(@Length(max = 6, message = "{course.valid.id.length}") String id,
-            @Length(max = 150, message = "{course.valid.name.length}") @NotBlank(message = "{course.valid.name.notblank}") String name,
-            @DecimalMin(value = "0.0", inclusive = true, message = "{course.valid.fee.min}") Double fee,
-            @Length(max = 45, message = "{course.valid.duration.length}") @NotBlank(message = "{course.valid.duration.notblank}") String duration,
-            @NotNull(message = "{course.valid.status.notnull}") Status status) {
-        this.id = id;
-        this.name = name;
-        this.fee = fee;
-        this.duration = duration;
-        this.status = status;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getFee() {
-        return fee;
-    }
-
-    public void setFee(Double fee) {
-        this.fee = fee;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Course [id=" + id + ", name=" + name + ", fee=" + fee + ", duration=" + duration + ", status=" + status
-                + "]";
-    }
 
 }
