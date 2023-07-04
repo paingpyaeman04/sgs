@@ -45,7 +45,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeHttpRequests(authz -> authz.antMatchers("/register").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(authz -> authz.antMatchers("/register").permitAll().antMatchers("/users/**")
+                        .hasRole("ADMIN").antMatchers("/courses/add").hasAnyRole("ADMIN", "LECTURER")
+                        .antMatchers("/courses/delete").hasRole("ADMIN").anyRequest()
+                        .authenticated())
                 .formLogin(
                         form -> form.loginPage("/signin").loginProcessingUrl("/login").defaultSuccessUrl("/")
                                 .permitAll())
